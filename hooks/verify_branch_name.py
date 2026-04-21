@@ -29,6 +29,8 @@ import re
 import argparse
 import subprocess
 
+from verify_commit_author import get_git_user_info
+
 
 def get_current_branch() -> str:
     """Get the current Git branch name."""
@@ -84,6 +86,12 @@ def main():
         "master)",
     )
     args = parser.parse_args()
+
+    name, email = get_git_user_info()
+
+    if email == "" and name == "":
+        # Skip checks if running from CI without git user configured
+        return 0
 
     branch_name = get_current_branch()
     if validate_branch_name(branch_name, args.categories):

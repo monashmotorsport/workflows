@@ -56,6 +56,10 @@ def main():
 
     name, email = get_git_user_info()
 
+    if email == "" and name == "":
+        # Skip checks if running from CI without git user configured
+        return 0
+
     exit_code = 0
 
     if not is_valid_email(email, args.domain):
