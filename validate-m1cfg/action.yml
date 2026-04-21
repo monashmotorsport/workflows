@@ -1,0 +1,38 @@
+name: Validate MoTeC .m1cfg
+
+description: >
+  Validates a MoTeC .m1cfg config file against the provided XSD schema, and checks that
+  it matches the parameters found in the corresponding .m1prj file.
+
+inputs:
+  cfg-path:
+    description: 'Path to the .m1cfg file to validate'
+    required: true
+  prj-path:
+    description: >
+      Path to the corresponding .m1prj file to compare against. If not provided, only
+      schema validation will be performed.
+    required: false
+    default: ''
+  python-version:
+    description: 'Python version to use'
+    required: false
+    default: '3.13'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install dependencies
+      run: python -m pip install --upgrade pip && pip install lxml
+      shell: bash
+
+    - name: Run validator
+      env:
+        PYTHONPATH: ${{ github.action_path }}
+      run: python ${{ github.action_path }}/main.py ${{ inputs.cfg-path }} ${{ inputs.prj-path }}
+      shell: bash

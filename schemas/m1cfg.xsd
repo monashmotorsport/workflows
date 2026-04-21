@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+  <!-- Root element -->
+  <xs:element name="Configuration">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Group" type="GroupType" minOccurs="1" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="Locale" type="xs:string" use="required"/>
+      <xs:attribute name="DefaultLocale" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- Group: allows Parameter or Table in any order -->
+  <xs:complexType name="GroupType">
+    <xs:sequence>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Parameter" type="ParameterType"/>
+        <xs:element name="Table" type="TableType"/>
+      </xs:choice>
+    </xs:sequence>
+    <xs:attribute name="Name" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <!-- Parameter: has a Name and exactly one Cell -->
+  <xs:complexType name="ParameterType">
+    <xs:sequence>
+      <xs:element name="Cell" type="ParamCellType"/>
+    </xs:sequence>
+    <xs:attribute name="Name" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <!-- Cell used in Parameter: textual content (CDATA) with Type and optional Unit -->
+  <xs:complexType name="ParamCellType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="Type" use="required">
+          <xs:simpleType>
+            <xs:restriction base="xs:token">
+              <xs:enumeration value="enum"/>
+              <xs:enumeration value="f32"/>
+              <xs:enumeration value="u32"/>
+              <xs:enumeration value="s32"/>
+              <xs:enumeration value="u16"/>
+              <xs:enumeration value="i16"/>
+              <xs:enumeration value="string"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Unit" type="xs:string" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <!-- Table type -->
+  <xs:complexType name="TableType">
+    <xs:sequence>
+      <xs:element name="X" type="TableAxisType" minOccurs="0"/>
+      <xs:element name="Body" type="TableAxisType" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="Name" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <!-- X/Body axis: contains Cells element -->
+  <xs:complexType name="TableAxisType">
+    <xs:sequence>
+      <xs:element name="Cells" type="CellsType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Cells: Type required, Unit optional; contains multiple Cell entries -->
+  <xs:complexType name="CellsType">
+    <xs:sequence>
+      <xs:element name="Cell" type="TableCellType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="Type" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="f32"/>
+          <xs:enumeration value="u32"/>
+          <xs:enumeration value="s32"/>
+          <xs:enumeration value="enum"/>
+          <xs:enumeration value="string"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="Unit" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <!-- Cell inside Cells: Site required, optional State, textual content -->
+  <xs:complexType name="TableCellType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="Site" use="required">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:pattern value="[0-9]+(,[0-9]+)*(,[0-9]+)*"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="State" type="xs:integer" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+</xs:schema>
