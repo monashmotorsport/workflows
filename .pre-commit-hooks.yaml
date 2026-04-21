@@ -1,0 +1,25 @@
+-   id: convert-tabs-to-spaces
+    name: convert tabs to spaces
+    description: Convert tabs to spaces in the specified files.
+    entry: convert-tabs-to-spaces
+    language: python
+    types: [file]
+    stages: [pre-commit]
+
+-   id: verify-commit-author
+    name: verify commit author
+    description: Verify that the commit author email domain matches the specified domain.
+    entry: verify-commit-author
+    language: python
+    always_run: true
+    pass_filenames: false
+    stages: [pre-commit]
+
+-   id: verify-branch-name
+    name: verify branch name
+    description: Verify that the current branch name follows the category/description format.
+    entry: verify-branch-name
+    language: python
+    always_run: true
+    pass_filenames: false
+    stages: [pre-commit]

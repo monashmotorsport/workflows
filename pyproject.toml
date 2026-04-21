@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "motec-workflows"
+version = "0.1.0"
+description = "Shared GitHub Actions and pre-commit hooks for monashmotorsport"
+requires-python = ">=3.9"
+dependencies = [
+    "lxml",
+    "pre-commit",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["hooks*"]
+
+[project.scripts]
+convert-tabs-to-spaces = "hooks.convert_tabs_to_spaces:main"
+verify-commit-author = "hooks.verify_commit_author:main"
+verify-branch-name = "hooks.verify_branch_name:main"
